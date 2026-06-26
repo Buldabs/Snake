@@ -322,7 +322,7 @@ function endGame() {
     gameOver = true;
     if (timerId) clearTimeout(timerId);
     saveBestScore();
-    gameOverMsg.textContent = '💀 Игра окончена! Нажмите "Новая игра" или R';
+    gameOverMsg.textContent = '💀 Игра окончена! Нажмите "Новая игра" или R ';
     clearCanvas();
     drawFood();
     drawSnake();
