@@ -1,0 +1,221 @@
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #0f0f1a;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* ============================================================
+   GAME CONTAINER
+   ============================================================ */
+.game-container {
+    text-align: center;
+    background: #1a1a2e;
+    padding: 30px 40px 40px;
+    border-radius: 28px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+    border: 1px solid #2a2a44;
+    max-width: 500px;
+    width: 100%;
+    margin: 20px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.score-box {
+    color: #fff;
+    font-size: 18px;
+    background: #252540;
+    padding: 8px 18px;
+    border-radius: 40px;
+    border: 1px solid #3a3a5a;
+    white-space: nowrap;
+}
+
+.score-box span {
+    color: #f5c542;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    background: #2a2a4a;
+    border: none;
+    color: #ddd;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 1px solid #3a3a5a;
+    font-family: inherit;
+}
+
+.btn:hover {
+    background: #3a3a6a;
+    color: #fff;
+    border-color: #f5c542;
+    transform: scale(1.02);
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+.btn-primary {
+    background: #f5c542;
+    color: #1a1a2e;
+    font-weight: bold;
+    border-color: #f5c542;
+}
+
+.btn-primary:hover {
+    background: #ffd966;
+    border-color: #ffd966;
+}
+
+/* ============================================================
+   CANVAS
+   ============================================================ */
+#gameCanvas {
+    display: block;
+    margin: 0 auto;
+    border-radius: 16px;
+    background: #0f0f1a;
+    box-shadow: 0 0 0 2px #2a2a44, 0 10px 30px rgba(0, 0, 0, 0.6);
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1/1;
+    height: auto;
+}
+
+/* ============================================================
+   GAME OVER MESSAGE
+   ============================================================ */
+#gameOverMessage {
+    color: #ff6b6b;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px;
+    min-height: 28px;
+}
+
+/* ============================================================
+   INFO / KEYBOARD HINTS
+   ============================================================ */
+.info {
+    margin-top: 16px;
+    color: #666;
+    font-size: 13px;
+}
+
+.info kbd {
+    background: #252540;
+    padding: 4px 10px;
+    border-radius: 6px;
+    color: #ccc;
+    margin: 0 3px;
+    border: 1px solid #3a3a5a;
+    font-family: inherit;
+}
+
+.level-badge {
+    color: #8af;
+    font-weight: bold;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 550px) {
+    .game-container {
+        padding: 16px;
+        margin: 10px;
+        border-radius: 18px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .controls {
+        justify-content: center;
+    }
+
+    .score-box {
+        font-size: 15px;
+        padding: 6px 14px;
+        text-align: center;
+    }
+
+    .btn {
+        font-size: 13px;
+        padding: 6px 14px;
+    }
+
+    .info {
+        font-size: 11px;
+    }
+
+    .info kbd {
+        padding: 3px 7px;
+        font-size: 11px;
+    }
+
+    #gameOverMessage {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .game-container {
+        padding: 10px;
+        margin: 6px;
+    }
+
+    .btn {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+
+    .score-box {
+        font-size: 13px;
+        padding: 5px 10px;
+    }
+
+    .score-box span {
+        font-size: 17px;
+    }
+}
