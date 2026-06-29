@@ -17,7 +17,7 @@
 
 ## 🚀 Демо
 
-🔗 [Ссылка на деплой](https://buldabs.github.io/Snake/)
+🔗 [Ссылка на деплой](https://www.freecodecamp.org/news/think-like-a-programmer-how-to-build-snake-using-only-javascript-html-and-css-7b1479c3339e/)
 
 ---
 
@@ -56,3 +56,4 @@
 
 4. Откройте игру в браузере
 Перейдите по адресу: http://localhost:5000
+
