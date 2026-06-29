@@ -7,10 +7,24 @@ const scoreSpan = document.getElementById('scoreValue');
 const bestSpan = document.getElementById('bestScoreValue');
 const gameOverMsg = document.getElementById('gameOverMessage');
 const levelLabel = document.getElementById('levelLabel');
+const playerNameInput = document.getElementById('playerName');
+const applyNameBtn = document.getElementById('applyNameBtn');
+
+// Статистика
+const statsGames = document.getElementById('statsGames');
+const statsAvgScore = document.getElementById('statsAvgScore');
+const statsBestScore = document.getElementById('statsBestScore');
+const statsMaxLevel = document.getElementById('statsMaxLevel');
+
+// Рекорды
+const recordsList = document.getElementById('recordsList');
 
 const BOARD_SIZE = 400;
 const CELL_SIZE = 20;
 const CELL_COUNT = BOARD_SIZE / CELL_SIZE;
+
+// API URL (для локальной разработки)
+const API_URL = '/api';
 
 // Уровни: [мс между тиками]
 const LEVELS = {
@@ -36,24 +50,100 @@ let changingDirection = false;
 let gameRunning = false;
 let gameOver = false;
 let timerId = null;
+let currentPlayer = 'Buldabs';
+
+// Время игры для статистики
+let gameStartTime = 0;
+let foodEaten = 0;
 
 // ============================================================
-//  3. РЕКОРДЫ (localStorage)
+//  3. РАБОТА С API
 // ============================================================
-function loadBestScore() {
-    const saved = localStorage.getItem('snakeBestScore');
-    if (saved) {
-        bestScore = parseInt(saved, 10) || 0;
-        bestSpan.textContent = bestScore;
+async function loadRecords() {
+    try {
+        const response = await fetch(`${API_URL}/records`);
+        const records = await response.json();
+        renderRecords(records);
+        
+        if (records.length > 0) {
+            bestScore = records[0].score;
+            bestSpan.textContent = bestScore;
+        }
+    } catch (e) {
+        console.warn('Не удалось загрузить рекорды:', e);
+        recordsList.innerHTML = '<div class="loading">⚠️ Не удалось загрузить рекорды</div>';
     }
 }
 
-function saveBestScore() {
-    if (score > bestScore) {
-        bestScore = score;
-        localStorage.setItem('snakeBestScore', String(bestScore));
-        bestSpan.textContent = bestScore;
+async function loadPlayerStats(username) {
+    try {
+        const response = await fetch(`${API_URL}/stats/${encodeURIComponent(username)}`);
+        if (!response.ok) {
+            statsGames.textContent = '0';
+            statsAvgScore.textContent = '0';
+            statsBestScore.textContent = '0';
+            statsMaxLevel.textContent = '1';
+            return;
+        }
+        const stats = await response.json();
+        statsGames.textContent = stats.games_played || 0;
+        statsAvgScore.textContent = stats.avg_score || 0;
+        statsBestScore.textContent = stats.best_score || 0;
+        statsMaxLevel.textContent = stats.max_level || 1;
+    } catch (e) {
+        console.warn('Не удалось загрузить статистику:', e);
     }
+}
+
+async function saveGameResult(username, score, level, foodEaten, duration, result) {
+    try {
+        const response = await fetch(`${API_URL}/game`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: username,
+                score: score,
+                level: level,
+                food_eaten: foodEaten,
+                duration: duration,
+                result: result
+            })
+        });
+        const data = await response.json();
+        if (data.status === 'ok') {
+            await loadRecords();
+            await loadPlayerStats(username);
+        }
+    } catch (e) {
+        console.warn('Не удалось сохранить результат:', e);
+    }
+}
+
+function renderRecords(records) {
+    if (!records || records.length === 0) {
+        recordsList.innerHTML = '<div class="loading">😅 Пока нет рекордов. Сыграйте!</div>';
+        return;
+    }
+    
+    let html = '';
+    records.forEach((record, index) => {
+        const rank = index + 1;
+        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}.`;
+        html += `
+            <div class="record-item">
+                <span class="rank">${medal}</span>
+                <span class="name">${escapeHtml(record.player_name)}</span>
+                <span class="score">${record.score}</span>
+            </div>
+        `;
+    });
+    recordsList.innerHTML = html;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // ============================================================
@@ -99,7 +189,6 @@ function clearCanvas() {
     ctx.fillStyle = '#0f0f1a';
     ctx.fillRect(0, 0, BOARD_SIZE, BOARD_SIZE);
 
-    // Сетка
     ctx.strokeStyle = '#1a1a30';
     ctx.lineWidth = 0.5;
     for (let i = 0; i <= CELL_COUNT; i++) {
@@ -140,7 +229,6 @@ function drawSnakePart(part, index) {
     ctx.fill();
     ctx.stroke();
 
-    // Глаза у головы
     if (isHead) {
         ctx.shadowBlur = 0;
         ctx.fillStyle = '#fff';
@@ -184,7 +272,6 @@ function drawFood() {
     ctx.fill();
 
     ctx.shadowBlur = 0;
-    // Блик
     ctx.fillStyle = 'rgba(255,255,255,0.25)';
     ctx.beginPath();
     ctx.arc(x + 6, y + 6, 3, 0, 2 * Math.PI);
@@ -205,7 +292,8 @@ function advanceSnake() {
     if (didEat) {
         score += 10;
         scoreSpan.textContent = score;
-        saveBestScore();
+        foodEaten++;
+        
         createFood();
         if (score % 50 === 0 && currentLevel < 4) {
             increaseLevel();
@@ -306,6 +394,8 @@ function startGame() {
     gameOverMsg.textContent = '';
     score = 0;
     scoreSpan.textContent = score;
+    foodEaten = 0;
+    gameStartTime = Date.now();
     currentLevel = 1;
     levelLabel.textContent = currentLevel;
     tickInterval = LEVELS[currentLevel];
@@ -321,8 +411,14 @@ function endGame() {
     gameRunning = false;
     gameOver = true;
     if (timerId) clearTimeout(timerId);
-    saveBestScore();
-    gameOverMsg.textContent = '💀 Игра окончена! Нажмите "Новая игра" или R ';
+    
+    const duration = Math.floor((Date.now() - gameStartTime) / 1000);
+    const result = 'lose';
+    
+    // Сохраняем результат в БД
+    saveGameResult(currentPlayer, score, currentLevel, foodEaten, duration, result);
+    
+    gameOverMsg.textContent = '💀 Игра окончена! Нажмите "Новая игра" или Пробел';
     clearCanvas();
     drawFood();
     drawSnake();
@@ -343,13 +439,16 @@ document.addEventListener('keydown', (e) => {
         e.preventDefault();
         changeDirection(e);
     }
-    if (e.key === 'r' || e.key === 'R') {
+    if (e.key === ' ' || e.key === 'Spacebar') {
         e.preventDefault();
-        restartGame();
+        if (gameOver || !gameRunning) {
+            restartGame();
+        }
     }
 });
 
 document.getElementById('restartBtn').addEventListener('click', restartGame);
+
 document.getElementById('levelBtn').addEventListener('click', () => {
     if (currentLevel < 4) {
         increaseLevel();
@@ -358,6 +457,20 @@ document.getElementById('levelBtn').addEventListener('click', () => {
         setTimeout(() => {
             if (!gameOver) gameOverMsg.textContent = '';
         }, 1500);
+    }
+});
+
+applyNameBtn.addEventListener('click', () => {
+    const name = playerNameInput.value.trim();
+    if (name) {
+        currentPlayer = name;
+        loadPlayerStats(currentPlayer);
+    }
+});
+
+playerNameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        applyNameBtn.click();
     }
 });
 
@@ -381,6 +494,9 @@ window.addEventListener('resize', resizeCanvas);
 // ============================================================
 //  15. ЗАПУСК
 // ============================================================
-loadBestScore();
+loadRecords();
+loadPlayerStats(currentPlayer);
 startGame();
 resizeCanvas();
+
+console.log('🐍 Змейка запущена! API:', API_URL);

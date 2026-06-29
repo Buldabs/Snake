@@ -22,13 +22,45 @@ body {
 .game-container {
     text-align: center;
     background: #1a1a2e;
-    padding: 30px 40px 40px;
+    padding: 25px 35px 35px;
     border-radius: 28px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
     border: 1px solid #2a2a44;
-    max-width: 500px;
+    max-width: 520px;
     width: 100%;
     margin: 20px;
+}
+
+/* ============================================================
+   PLAYER INPUT
+   ============================================================ */
+.player-input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.player-input label {
+    color: #aaa;
+    font-size: 14px;
+}
+
+.player-input input {
+    background: #252540;
+    border: 1px solid #3a3a5a;
+    border-radius: 20px;
+    padding: 6px 16px;
+    color: #fff;
+    font-size: 14px;
+    width: 140px;
+    outline: none;
+}
+
+.player-input input:focus {
+    border-color: #f5c542;
 }
 
 /* ============================================================
@@ -38,16 +70,16 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 18px;
-    gap: 20px;
+    margin-bottom: 15px;
+    gap: 15px;
     flex-wrap: wrap;
 }
 
 .score-box {
     color: #fff;
-    font-size: 18px;
+    font-size: 16px;
     background: #252540;
-    padding: 8px 18px;
+    padding: 6px 16px;
     border-radius: 40px;
     border: 1px solid #3a3a5a;
     white-space: nowrap;
@@ -56,7 +88,7 @@ body {
 .score-box span {
     color: #f5c542;
     font-weight: bold;
-    font-size: 22px;
+    font-size: 20px;
 }
 
 /* ============================================================
@@ -64,7 +96,7 @@ body {
    ============================================================ */
 .controls {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
@@ -72,9 +104,9 @@ body {
     background: #2a2a4a;
     border: none;
     color: #ddd;
-    padding: 8px 18px;
+    padding: 6px 16px;
     border-radius: 30px;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     transition: 0.2s;
     border: 1px solid #3a3a5a;
@@ -131,17 +163,108 @@ body {
 }
 
 /* ============================================================
-   INFO / KEYBOARD HINTS
+   STATS
    ============================================================ */
-.info {
-    margin-top: 16px;
+.stats-container {
+    margin-top: 12px;
+    padding: 10px 16px;
+    background: #15152a;
+    border-radius: 14px;
+    border: 1px solid #2a2a44;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-around;
+    color: #aaa;
+    font-size: 13px;
+}
+
+.stats-row span {
+    color: #ddd;
+}
+
+.stats-row span span {
+    color: #f5c542;
+    font-weight: bold;
+}
+
+/* ============================================================
+   RECORDS
+   ============================================================ */
+.records-container {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #15152a;
+    border-radius: 14px;
+    border: 1px solid #2a2a44;
+}
+
+.records-container h3 {
+    color: #f5c542;
+    font-size: 15px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+#recordsList {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+#recordsList .record-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 8px;
+    border-bottom: 1px solid #22223a;
+    color: #ccc;
+    font-size: 13px;
+}
+
+#recordsList .record-item:last-child {
+    border-bottom: none;
+}
+
+#recordsList .record-item .rank {
+    color: #f5c542;
+    font-weight: bold;
+    width: 30px;
+    text-align: left;
+}
+
+#recordsList .record-item .name {
+    flex: 1;
+    text-align: left;
+    padding-left: 8px;
+}
+
+#recordsList .record-item .score {
+    font-weight: bold;
+    color: #8f8;
+}
+
+#recordsList .loading {
     color: #666;
     font-size: 13px;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* ============================================================
+   INFO
+   ============================================================ */
+.info {
+    margin-top: 14px;
+    color: #666;
+    font-size: 12px;
 }
 
 .info kbd {
     background: #252540;
-    padding: 4px 10px;
+    padding: 3px 9px;
     border-radius: 6px;
     color: #ccc;
     margin: 0 3px;
@@ -149,9 +272,21 @@ body {
     font-family: inherit;
 }
 
-.level-badge {
-    color: #8af;
-    font-weight: bold;
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+#recordsList::-webkit-scrollbar {
+    width: 4px;
+}
+
+#recordsList::-webkit-scrollbar-track {
+    background: #1a1a2e;
+    border-radius: 4px;
+}
+
+#recordsList::-webkit-scrollbar-thumb {
+    background: #3a3a5a;
+    border-radius: 4px;
 }
 
 /* ============================================================
@@ -159,63 +294,51 @@ body {
    ============================================================ */
 @media (max-width: 550px) {
     .game-container {
-        padding: 16px;
-        margin: 10px;
+        padding: 14px;
+        margin: 8px;
         border-radius: 18px;
     }
 
     .header {
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
+        gap: 10px;
     }
 
     .controls {
         justify-content: center;
     }
 
-    .score-box {
-        font-size: 15px;
-        padding: 6px 14px;
-        text-align: center;
+    .player-input {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .player-input input {
+        width: 100%;
+    }
+
+    .stats-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
     }
 
     .btn {
-        font-size: 13px;
-        padding: 6px 14px;
+        font-size: 12px;
+        padding: 5px 12px;
     }
 
-    .info {
-        font-size: 11px;
-    }
-
-    .info kbd {
-        padding: 3px 7px;
-        font-size: 11px;
-    }
-
-    #gameOverMessage {
+    .score-box {
         font-size: 14px;
-    }
-}
-
-@media (max-width: 400px) {
-    .game-container {
-        padding: 10px;
-        margin: 6px;
-    }
-
-    .btn {
-        font-size: 11px;
-        padding: 5px 10px;
-    }
-
-    .score-box {
-        font-size: 13px;
-        padding: 5px 10px;
+        padding: 5px 12px;
     }
 
     .score-box span {
         font-size: 17px;
+    }
+
+    #recordsList .record-item {
+        font-size: 12px;
     }
 }

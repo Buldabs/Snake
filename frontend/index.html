@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>🐍 Змейка с БД</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="game-container">
+    <!-- Ввод имени игрока -->
+    <div class="player-input">
+        <label for="playerName">👤 Ваше имя:</label>
+        <input type="text" id="playerName" value="Buldabs" maxlength="20" />
+        <button class="btn btn-primary" id="applyNameBtn">Применить</button>
+    </div>
+
+    <div class="header">
+        <div class="score-box">
+            🍎 <span id="scoreValue">0</span>
+            &nbsp;&nbsp;|&nbsp;&nbsp;🏆 <span id="bestScoreValue">0</span>
+        </div>
+        <div class="controls">
+            <button class="btn" id="levelBtn">Уровень: <span id="levelLabel">1</span></button>
+            <button class="btn btn-primary" id="restartBtn">🔄 Новая игра</button>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+    <div id="gameOverMessage"></div>
+
+    <!-- Статистика -->
+    <div class="stats-container">
+        <div class="stats-row">
+            <span>📊 Игр: <span id="statsGames">0</span></span>
+            <span>⭐ Средний счёт: <span id="statsAvgScore">0</span></span>
+        </div>
+        <div class="stats-row">
+            <span>🏅 Лучший счёт: <span id="statsBestScore">0</span></span>
+            <span>📈 Макс. уровень: <span id="statsMaxLevel">1</span></span>
+        </div>
+    </div>
+
+    <!-- Таблица рекордов -->
+    <div class="records-container">
+        <h3>🏆 Топ-10 рекордов</h3>
+        <div id="recordsList">
+            <div class="loading">Загрузка...</div>
+        </div>
+    </div>
+
+    <div class="info">
+        <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> — управление &nbsp;|&nbsp;
+        <kbd>Пробел</kbd> — рестарт
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
