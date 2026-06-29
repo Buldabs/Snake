@@ -37,3 +37,22 @@
 1. Склонируйте репозиторий:
    ```bash
    git clone https://github.com/Buldabs/Snake.git
+
+2. Установите зависимости для бэкенда
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   ```
+   # или если у вас Ubuntu/WSL:
+   ```bash 
+   sudo apt install python3-flask python3-flask-cors -y1 
+   ```
+
+
+3. Запустите сервер
+   ```bash
+   python app.py
+   ```
+
+4. Откройте игру в браузере
+Перейдите по адресу: http://localhost:5000
